@@ -11,6 +11,7 @@ public class Weierstrass extends Fonction{
 	double LowerLimit = -100;
 	double UpperLimit = 100;
 	public Weierstrass (){
+		super(-100,100);
 		a=0.5;
 		b=3.0;
 		kmax=20;

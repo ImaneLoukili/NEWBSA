@@ -10,6 +10,10 @@ public class Ackley extends Fonction{
 	private double b= 0.2;
 	private double c = Math.PI; 
 
+	public Ackley() {
+		// TODO Auto-generated constructor stub
+		super(-32.768,32.768);
+	}
 	@Override
 	public double fitness(Vector<Double> tab) {
 		// TODO Auto-generated method stub

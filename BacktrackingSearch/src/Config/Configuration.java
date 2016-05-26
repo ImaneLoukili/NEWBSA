@@ -1,7 +1,11 @@
 package Config;
 
+import Fonction.Ackley;
 import Fonction.Fonction;
+import Fonction.Griewank;
+import Fonction.Rastrigin;
 import Fonction.Rosenbrock;
+import Fonction.Weierstrass;
 
 public class Configuration {
 
@@ -15,6 +19,6 @@ public class Configuration {
 	//End of BSA search Initialisation
 	
 	
-	public static String fctname = "Rosenbrock";	//Rastrigin / Rosenbrock / Griewank / Ackley / Weierstrass
-	public static Fonction fct = new Rosenbrock();	
+	public static String fctname = "Ackley";	//Rastrigin / Rosenbrock / Griewank / Ackley / Weierstrass
+	public static Fonction fct = new Ackley();	
 }

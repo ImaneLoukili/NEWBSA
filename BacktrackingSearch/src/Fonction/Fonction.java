@@ -7,5 +7,11 @@ public abstract class Fonction {
 	public double LowerLimit;
 	public double UpperLimit;
 	
+	public Fonction(double lo,double up) {
+		// TODO Auto-generated constructor stub
+		LowerLimit = lo;
+		UpperLimit = up;
+	}
+	
 	
 }

@@ -13,6 +13,11 @@ public class Griewank extends Fonction{
 		
 	}
 	
+	public Griewank() {
+		// TODO Auto-generated constructor stub
+		super(-600,600);
+	}
+	
 	private double Sum(Vector<Double> tab){
 		double somme = 0;
 		for (int i = 0;i<=tab.size()-1;i++){
