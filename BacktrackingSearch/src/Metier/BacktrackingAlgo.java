@@ -17,7 +17,7 @@ public class BacktrackingAlgo {
 	//private int tempMut;
 	double min;
 	double max;
-	double fitBest;
+	double[] fitBest=new double[Configuration.nbItRun];
 	int i, j;
 	int indexBest;
 	int indexWorst;
@@ -28,7 +28,7 @@ public class BacktrackingAlgo {
 	double[][] P = new double[Configuration.popsize][Configuration.dim];
 	double[][] Mutant = new double[Configuration.popsize][Configuration.dim];
 	double[][] Map = new double[Configuration.popsize][Configuration.dim];
-	double[][] T = new double[Configuration.popsize][Configuration.dim];
+	double[][] T;
 	Vector<Double> fitP = new Vector<Double>(Configuration.popsize);
 	private Vector<Double> globalMinimizer = new Vector<Double>();
 	private Vector<Integer> mutT = new Vector<Integer>();
@@ -78,8 +78,8 @@ public class BacktrackingAlgo {
 		// Initialisation
 
 		globalMin = Double.MAX_VALUE;
-		_lower_cost = fct.fitness(TabLine);
-		_upper_cost = _lower_cost;
+		//_lower_cost = fct.fitness(TabLine);
+		//_upper_cost = _lower_cost;
 		for (int i = 0; i < Configuration.popsize; i++) {
 			TabLine.clear();
 			for (int j = 0; j < Configuration.dim; j++) {
@@ -91,13 +91,13 @@ public class BacktrackingAlgo {
 			fitP.add(fct.fitness(TabLine));
 		}
 		
-		fitP = Tri(fitP);
+		//fitP = Tri(fitP);
 		//System.out.println(fitP);
 		//System.out.println(fitP.elementAt(0));
-		min = fitP.elementAt(0);
-		max = fitP.elementAt(fitP.size() - 1);
-		indexBest = 0;
-		indexWorst = fitP.size() - 1;
+//		min = fitP.elementAt(0);
+//		max = fitP.elementAt(fitP.size() - 1);
+//		indexBest = 0;
+//		indexWorst = fitP.size() - 1;
 
 		for (int r = 0; r < Configuration.nbItRun; r++) {
 
@@ -110,16 +110,20 @@ public class BacktrackingAlgo {
 			double b = rnd.nextDouble();
 			double c = rnd.nextDouble();
 			double d = rnd.nextDouble();
+			if (a < b) {
+				oldPop = P.clone();
+			}
+			double temp;
+			int randA;
+			int randB;
 			for (int i = 0; i < Configuration.popsize; i++) {
 				for (int j = 0; j < Configuration.dim; j++) {
-					if (a < b) {
-						oldPop[i][j] = P[i][j];
-					}
+					
 
-					int randA = rnd.nextInt(Configuration.popsize - 1);
-					int randB = rnd.nextInt(Configuration.popsize - 1);
+					randA = rnd.nextInt(Configuration.popsize - 1);
+					randB = rnd.nextInt(Configuration.popsize - 1);
 
-					double temp;
+					
 
 					temp = oldPop[randA][j];
 					oldPop[randA][j] = oldPop[randB][j];
@@ -128,11 +132,10 @@ public class BacktrackingAlgo {
 			}
 
 			// Mutation
-			double F;
-
+			double F =3 * rnd.nextDouble();;
 			for (int i = 0; i < Configuration.popsize; i++) {
 				for (int j = 0; j < Configuration.dim; j++) {
-					F = 3 * rnd.nextDouble();
+					
 					Mutant[i][j] = P[i][j] + ((oldPop[i][j] - P[i][j]) * F);
 				}
 			}
@@ -174,12 +177,8 @@ public class BacktrackingAlgo {
 
 				}
 			}
-			/////////
-			for (int i = 0; i < Configuration.popsize; i++) {
-				for (int j = 0; j < Configuration.dim; j++) {
-					T[i][j] = Mutant[i][j];
-				}
-			}
+			
+			T = Mutant.clone();
 
 			for (int i = 0; i < Configuration.popsize; i++) {
 				for (int j = 0; j < Configuration.dim; j++) {
@@ -188,7 +187,8 @@ public class BacktrackingAlgo {
 					}
 				}
 			}
-
+			
+			fitT.clear();
 			// Boundary Control
 			for (int i = 0; i < Configuration.popsize; i++) {
 				TabLine.clear();
@@ -203,30 +203,36 @@ public class BacktrackingAlgo {
 				fitT.add(fct.fitness(TabLine));
 			}
 			
-			fitP = GetBestValues(fitP,fitT);
-			_lower_cost = fitP.elementAt(0);
-			_upper_cost = fitP.elementAt(fitP.size()-1);
-			System.out.println(fitP.elementAt(fitP.size()-1));
-			min = fitP.elementAt(0);
-			max = fitP.elementAt(fitP.size() - 1);
-			indexBest = 0;
-			indexWorst = fitP.size() - 1;
-//			// Selection 2
-//			for (int i = 0; i < Configuration.popsize; i++) {
-//				for (int j = 0; j < Configuration.dim; j++) {
-//
-//					if (fitT.elementAt(i) < fitP.elementAt(i)) {
-//						P[i][j] = T[i][j];
-//						fitP.add(fitT.elementAt(i));
-//					}
-//				}
-//
-//			}
+//			fitP = GetBestValues(fitP,fitT);
+//			_lower_cost = fitP.elementAt(0);
+//			_upper_cost = fitP.elementAt(fitP.size()-1);
+//			System.out.println(fitP.elementAt(fitP.size()-1));
+//			min = fitP.elementAt(0);
+//			max = fitP.elementAt(fitP.size() - 1);
+//			indexBest = 0;
+//			indexWorst = fitP.size() - 1;
+			// Selection 2
+			for (int i = 0; i < Configuration.popsize; i++) {
+				for (int j = 0; j < Configuration.popsize; j++) {
 
-			fitBest = best_cost();
+					if (fitT.elementAt(i) < fitP.elementAt(j)) {
+						double X = fitP.elementAt(j);
+						fitP.setElementAt(fitT.elementAt(i), j);
+						fitT.setElementAt(X, i);
+						double[] Inter = P[j].clone();
+						P[j] = T[i].clone();
+						T[i] = Inter.clone();
+						j=0;
+						i=0;
+					}
+				}
 
-			if (fitBest <= globalMin) {
-				globalMin = fitBest;
+			}
+
+			fitBest[i] = best_cost(fitP,indexBest);
+
+			if (fitBest[i] <= globalMin) {
+				globalMin = fitBest[i];
 				for (int i = 0; i < Configuration.popsize; i++) {
 					for (int j = 0; j < Configuration.dim; j++) {
 						if (i == indexBest) {
@@ -237,14 +243,13 @@ public class BacktrackingAlgo {
 			}
 			fitT.clear();
 
-			System.out.println("Iteration : " + r + " -> Best Value : " + fitBest);
+			System.out.println("Iteration : " + r + " -> Best Value : " + fitBest[i]);
 		}
 		return globalMin;
 	}
 
 	public double random(double upper, double lower) {
-		Random rnd = new Random();
-		return (lower + (upper - lower) * rnd.nextDouble());
+		return (lower + (upper - lower) * Math.random());
 	}
 
 	public boolean Exists(int tempM) {
@@ -256,8 +261,18 @@ public class BacktrackingAlgo {
 		return false;
 	}
 
-	public double best_cost() {
-		return _lower_cost;
+	public double best_cost(Vector<Double> fitP,int bestVal) {
+		Double Best = fitP.elementAt(0);
+		bestVal=0;
+		for(int i=1;i<fitP.size();i++){
+			if(fitP.elementAt(i) < Best)
+			{
+				Best = fitP.elementAt(i);
+				bestVal = i;
+			}
+			
+		}
+		return Best;
 	}
 
 	public double worst_cost() {
