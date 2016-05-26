@@ -22,7 +22,8 @@ public class BacktrackingAlgo {
 	int indexBest;
 	int indexWorst;
 	int id;
-
+	double UpperLimit = fct.UpperLimit;
+	double LowerLimit = fct.LowerLimit;
 	Vector<Double> TabLine = new Vector<Double>();
 	double[][] oldPop = new double[Configuration.popsize][Configuration.dim];
 	double[][] P = new double[Configuration.popsize][Configuration.dim];
@@ -83,8 +84,8 @@ public class BacktrackingAlgo {
 		for (int i = 0; i < Configuration.popsize; i++) {
 			TabLine.clear();
 			for (int j = 0; j < Configuration.dim; j++) {
-				P[i][j] = random(fct.UpperLimit, fct.LowerLimit);
-				oldPop[i][j] = random(fct.UpperLimit, fct.LowerLimit);
+				P[i][j] = random(UpperLimit, LowerLimit);
+				oldPop[i][j] = random(UpperLimit, LowerLimit);
 				TabLine.add(P[i][j]);
 			}
 			//System.out.println(fct.fitness(TabLine));
@@ -194,8 +195,8 @@ public class BacktrackingAlgo {
 				TabLine.clear();
 
 				for (int j = 0; j < Configuration.dim; j++) {
-					if (T[i][j] < fct.LowerLimit || T[i][j] > fct.UpperLimit) {
-						T[i][j] = fct.LowerLimit + (fct.UpperLimit - fct.LowerLimit) * rnd.nextDouble();
+					if (T[i][j] < LowerLimit || T[i][j] > UpperLimit) {
+						T[i][j] = LowerLimit + (UpperLimit - LowerLimit) * rnd.nextDouble();
 					}
 					TabLine.add(T[i][j]);
 
@@ -212,21 +213,27 @@ public class BacktrackingAlgo {
 //			indexBest = 0;
 //			indexWorst = fitP.size() - 1;
 			// Selection 2
-			for (int i = 0; i < Configuration.popsize; i++) {
-				for (int j = 0; j < Configuration.popsize; j++) {
-
-					if (fitT.elementAt(i) < fitP.elementAt(j)) {
-						double X = fitP.elementAt(j);
-						fitP.setElementAt(fitT.elementAt(i), j);
-						fitT.setElementAt(X, i);
-						double[] Inter = P[j].clone();
-						P[j] = T[i].clone();
-						T[i] = Inter.clone();
-						j=0;
-						i=0;
-					}
+//			for (int i = 0; i < Configuration.popsize; i++) {
+//				for (int j = 0; j < Configuration.popsize; j++) {
+//
+//					if (fitT.elementAt(i) < fitP.elementAt(j)) {
+//						double X = fitP.elementAt(j);
+//						fitP.setElementAt(fitT.elementAt(i), j);
+//						fitT.setElementAt(X, i);
+//						double[] Inter = P[j].clone();
+//						P[j] = T[i].clone();
+//						T[i] = Inter.clone();
+//						j=0;
+//						i=0;
+//					}
+//				}
+//
+//			}
+			for(int i=0;i<Configuration.popsize;i++){
+				if(fitT.elementAt(i) < fitP.elementAt(i)){
+					fitP.setElementAt(fitT.elementAt(i), i);
+					P[i] = T[i].clone();
 				}
-
 			}
 
 			fitBest[i] = best_cost(fitP,indexBest);
@@ -244,7 +251,10 @@ public class BacktrackingAlgo {
 			fitT.clear();
 
 			System.out.println("Iteration : " + r + " -> Best Value : " + fitBest[i]);
+			Recalibrate();
 		}
+		fitT.clear();
+		fitP.clear();
 		return globalMin;
 	}
 
@@ -275,6 +285,11 @@ public class BacktrackingAlgo {
 		return Best;
 	}
 
+	
+	public void Recalibrate(){
+		UpperLimit = UpperLimit*0.995;
+		LowerLimit = LowerLimit*0.995;
+	}
 	public double worst_cost() {
 		return _upper_cost;
 	}
