@@ -19,6 +19,6 @@ public class Configuration {
 	//End of BSA search Initialisation
 	
 	
-	public static String fctname = "Rastrigin";	//Rastrigin / Rosenbrock / Griewank / Ackley / Weierstrass
-	public static Fonction fct = new Rastrigin();	
+	public static String fctname = "Ackley";	//Rastrigin / Rosenbrock / Griewank / Ackley / Weierstrass
+	public static Fonction fct = new Ackley();	
 }

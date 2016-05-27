@@ -10,7 +10,7 @@ import Fonction.Fonction;
 
 public class BacktrackingAlgo {
 	private double _upper_cost;
-	private double _lower_cost;
+//	private double _lower_cost;
 	private Fonction fct = Config.Configuration.fct;
 	private double globalMin;
 	private int randomMutants;
@@ -56,24 +56,24 @@ public class BacktrackingAlgo {
 		return amodifier;
 	}
 
-	public Vector<Double> GetBestValues(Vector<Double> fitP,Vector<Double> fitT){
-		Vector<Double> Intermediaire = new Vector<Double>();
-		for(Double d : fitP){
-			Intermediaire.add(d);
-		}
-		for(Double d : fitT){
-			Intermediaire.add(d);
-		}
-		
-		Intermediaire = Tri(Intermediaire);
-		
-		Vector<Double> Retour = new Vector<Double>();
-		
-		for(int i = 0; i<Config.Configuration.popsize;i++){
-			Retour.add(Intermediaire.elementAt(i));
-		}
-		return fitP;
-	}
+//	public Vector<Double> GetBestValues(Vector<Double> fitP,Vector<Double> fitT){
+//		Vector<Double> Intermediaire = new Vector<Double>();
+//		for(Double d : fitP){
+//			Intermediaire.add(d);
+//		}
+//		for(Double d : fitT){
+//			Intermediaire.add(d);
+//		}
+//		
+//		Intermediaire = Tri(Intermediaire);
+//		
+//		Vector<Double> Retour = new Vector<Double>();
+//		
+//		for(int i = 0; i<Config.Configuration.popsize;i++){
+//			Retour.add(Intermediaire.elementAt(i));
+//		}
+//		return fitP;
+//	}
 	
 	public double BacktrackingAlgoMain() {
 		// Initialisation
@@ -114,23 +114,21 @@ public class BacktrackingAlgo {
 			if (a < b) {
 				oldPop = P.clone();
 			}
-			double temp;
-			int randA;
-			int randB;
-			for (int i = 0; i < Configuration.popsize; i++) {
-				for (int j = 0; j < Configuration.dim; j++) {
+			double[] temp;
+		
+			for (int i = 0; i < Configuration.popsize; i=i+2) {
+				
 					
 
-					randA = rnd.nextInt(Configuration.popsize - 1);
-					randB = rnd.nextInt(Configuration.popsize - 1);
-
+		// la permutation ne doit peut etre pa se faire with random , on doit juste permuter 
+		//les individus de old p 2 par 2 !!
 					
-
-					temp = oldPop[randA][j];
-					oldPop[randA][j] = oldPop[randB][j];
-					oldPop[randB][j] = temp;
+					temp=oldPop[i+1];
+//					temp = oldPop[randA][j];
+					oldPop[i+1] = oldPop[i];
+					oldPop[i] = temp;
 				}
-			}
+			
 
 			// Mutation
 			double F =3 * rnd.nextDouble();;
@@ -163,6 +161,7 @@ public class BacktrackingAlgo {
 					// }
 					// mutT.setElementAt(tempMut, j);
 					// int m=mutT.get(j);
+					
 					Map[i][randomMutants] = 0;
 					// }
 				}
@@ -251,7 +250,7 @@ public class BacktrackingAlgo {
 			fitT.clear();
 
 			System.out.println("Iteration : " + r + " -> Best Value : " + fitBest[i]);
-			Recalibrate();
+			//Recalibrate();
 		}
 		fitT.clear();
 		fitP.clear();
@@ -286,10 +285,10 @@ public class BacktrackingAlgo {
 	}
 
 	
-	public void Recalibrate(){
-		UpperLimit = UpperLimit*0.995;
-		LowerLimit = LowerLimit*0.995;
-	}
+//	public void Recalibrate(){
+//		UpperLimit = UpperLimit*0.995;
+//		LowerLimit = LowerLimit*0.995;
+//	}
 	public double worst_cost() {
 		return _upper_cost;
 	}
